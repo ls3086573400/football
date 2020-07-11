@@ -124,7 +124,11 @@ int main(int argc, char **argv) {
         getchar();
         if(strlen(msg.msg)) {
             if(msg.msg[0] == '@') msg.type = CHAT_MSG;
-            if(msg.msg[0] == '#') msg.type = CHAT_FUNC;
+            if(msg.msg[0] == '#')
+            {
+                msg.type = CHAT_FUNC;
+                printf("当前在线人数6人\n");
+            }
             send(sockfd,(void*)&msg,sizeof(msg),0);
         }
     }
