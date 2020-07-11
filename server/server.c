@@ -1,9 +1,10 @@
 /*************************************************************************
 	> File Name: server.c
-	> Author: suyelu 
-	> Mail: suyelu@126.com
-	> Created Time: Thu 09 Jul 2020 10:51:49 AM CST
+	> Author:pujunsong 
+	> Mail:2724967607@qq.com 
+	> Created Time: Sat 11 Jul 2020 12:46:32 AM CST
  ************************************************************************/
+
 
 #include "head.h"
 char *conf = "./footballd.conf";
@@ -14,8 +15,6 @@ struct Score score;
 int repollfd, bepollfd;
 struct User *rteam, *bteam;
 int port = 0;
-pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char **argv) {
     int opt, listener, epollfd;
@@ -68,7 +67,7 @@ int main(int argc, char **argv) {
     
     struct task_queue redQueue;
     struct task_queue blueQueue;
-    
+
     task_queue_init(&redQueue, MAX, repollfd);
     task_queue_init(&blueQueue, MAX, bepollfd);
 
@@ -101,13 +100,11 @@ int main(int argc, char **argv) {
             if (events[i].data.fd == listener) {
                 int new_fd = udp_accept(listener, &user);
                 if (new_fd > 0) {
-                   add_to_sub_reactor(&user);
+                    add_to_sub_reactor(&user);
                 }
             }
         }
-
     }
-
-
     return 0;
 }
+
