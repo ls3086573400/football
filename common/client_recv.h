@@ -8,5 +8,5 @@
 #ifndef _CLIENT_RECV_H
 #define _CLIENT_RECV_H
 //#include "head.h"
-void  *do_recv (void *arg);
+void *do_recv(void *arg);
 #endif 

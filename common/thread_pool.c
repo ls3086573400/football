@@ -8,24 +8,30 @@
 #include "head.h"
 extern int repollfd, bepollfd;
 extern struct User *bteam, *rteam;
-extern pthread_mutex_t bmutex, rmutex;
+pthread_mutex_t bmutex, rmutex;
 
 void send_all(struct ChatMsg *msg) {
     for (int i = 0; i < MAX; i++) {
         if(bteam[i].online) send(bteam[i].fd, (void *)msg, sizeof(struct ChatMsg), 0);
-        if(bteam[i].online) send(bteam[i].fd, (void *)msg, sizeof(struct ChatMsg), 0);
+        if(rteam[i].online) send(rteam[i].fd, (void *)msg, sizeof(struct ChatMsg), 0);
     }
 }
 
 void send_to(char *to, struct ChatMsg*msg, int fd) {
     int flag = 0;
+   // bzero(msg,sizeof(msg));
     for (int i= 0; i<MAX; i++) {
         if(rteam[i].online && (!strcmp(to, rteam[i].name))) {
+          // strcpy(msg->name,to);
+           // printf("%s",to);
             send(rteam[i].fd,msg,sizeof(struct ChatMsg), 0);
             flag = 1;
             break;
         }
         if(bteam[i].online && (!strcmp(to, bteam[i].name))) {
+         //  strcpy(msg->name,to);
+          //  printf("%s",to);
+          //  strcpy()
             send(bteam[i].fd,msg,sizeof(struct ChatMsg), 0);
             flag = 1;
             break;
@@ -47,6 +53,7 @@ void do_work(struct User *user) {
     recv(user->fd, (void *)&msg, sizeof(msg), 0);
     if (msg.type & CHAT_WALL) {
         printf("<%s> ~ %s \n", user->name,msg.msg);
+      strcpy( msg.name,user->name);
         send_all(&msg);
     } else if (msg.type & CHAT_MSG) {
         char to[20];
@@ -69,6 +76,7 @@ void do_work(struct User *user) {
         msg.type  = CHAT_SYS;
         sprintf(msg.msg, "注意：我们的好朋友%s 要下线了!\n", user->name);
         strcpy(msg.name,user->name);
+
         send_all(&msg);
         if(user->team)
             pthread_mutex_lock(&bmutex);

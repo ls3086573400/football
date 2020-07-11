@@ -14,7 +14,9 @@ void *do_recv(void *arg) {
         struct ChatMsg msg;
         bzero(&msg, sizeof(msg));
         int ret =recv(sockfd, (void *)&msg, sizeof(msg), 0);
+       // strcpy(msg.name,"pujunsong");
         if(msg.type & CHAT_WALL){
+          //  printf("%s你好\n",msg.name);
             printf(""BLUE"%s"NONE" :%s\n",msg.name,msg.msg);
         }else if (msg.type&CHAT_MSG) {
             printf(""RED"%s"NONE" :%s\n",msg.name,msg.msg);
